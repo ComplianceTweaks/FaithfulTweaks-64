@@ -1,0 +1,70 @@
+{{ define "main" }}
+
+<div style="margin: 0;margin-top: 40px;">
+    <div class="container">
+        <div id="fail-alert" role="alert" class="alert alert-danger">
+            <button type="button" class="close" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+            <span><strong><i class="fas fa-times"></i> Failed </strong>to create resource pack.<br /></span>
+        </div>
+        <div role="alert" class="alert alert-success" id="finished-alert" style="margin-bottom: 20px;">
+            <button type="button" class="close" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+            <span><strong><i class="fas fa-check"></i></strong> Resource pack <strong>created!</strong> If your download doesn't begin you can download your pack <a class="alert-link" id="download-link" href="#">here</a>.</span>
+        </div>
+        <div role="alert" class="alert alert-blue" id="creating-alert" style="margin-bottom: 20px;">
+            <button type="button" class="close" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+            <span><strong><i class="fas fa-spinner fa-spin"></i> Creating</strong> resource pack...</span>
+        </div>
+    </div>
+    <div class="container" style="margin-top: 5px;">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="text-center shadow d-flex flex-column justify-content-lg-center align-items-lg-center justify-content-xl-center" style="border-radius: 20px;padding: 10px;margin-bottom: 40px;">
+                    <h3 style="width: 100%;text-align: left;margin-left: 20px;margin-bottom: 15px;">Choose Version:</h3>
+                    <div id="formatGroup" class="btn-group" role="group">
+                        {{ range .Params.formats }}
+                            <button class="btn {{ if .default }} btn-dark {{ else }} btn-light {{ end }}" id="format{{ .id }}" type="button">{{ .display }}</button>
+                        {{ end }}
+                    </div>
+                </div>
+                <div class="text-center shadow d-flex flex-column justify-content-lg-center align-items-lg-center justify-content-xl-center" style="border-radius: 20px;padding: 10px;margin-bottom: 40px;">
+                    <div class="d-flex flex-row justify-content-between align-items-center" style="width: 100%;margin-bottom: 10px;">
+                        <h3 style="text-align: left;margin-left: 20px;margin-top: 15px;">
+                            Select Modules:
+                        </h3>
+                        <button id="openAll" class="btn btn-dark">Open All</button>
+                    </div>
+                    
+                    <!-- CATEGORIES -->
+                    {{- partial "home/categories.html" . -}}
+                    
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center shadow d-flex flex-column justify-content-center justify-content-xl-center" style="border-radius: 20px;padding: 20px;margin-bottom: 40px;">
+                    <button class="btn btn-orange text-white" id="downloadPack" type="button" style="border-radius: 999px;">
+                        Download <i class="fa fa-arrow-down"></i>
+                    </button>
+                    <p style="margin: 10px 0 0 0;"><i class="fas fa-exclamation-triangle text-orange"></i> <a class="text-orange" style="text-decoration: underline;" href="/posts/how-to-install-faithful-x32/">Faithful x32</a> is required. <i class="fas fa-exclamation-triangle" style="color: var(--orange);"></i></p>
+                    <p style="margin: 10px 0 0 0;">Need help installing? Check out <a class="text-primary" style="text-decoration: underline;" href="/posts/how-to-install-your-resource-pack">this guide</a>.</p>
+                </div>
+                <div class="text-center shadow d-flex flex-column justify-content-center justify-content-xl-center"
+                    style="border-radius: 20px;padding: 20px;">
+                    <h4 class="text-center" style="text-align: left;margin-bottom: 15px;">Resources</h4>
+                    <a class="btn btn-orange text-white" role="button" style="margin-bottom: 15px;" href="https://info.faithfultweaks.com/">Homepage</a>
+                    <a class="btn btn-success text-white" role="button" style="margin-bottom: 15px;" href="/posts/how-to-install-faithful-x32">Where to Download Faithful</a>
+                    <a class="btn text-white btn-purple" role="button" style="border-radius: 999px;margin-bottom: 15px;" href="https://docs.google.com/forms/d/e/1FAIpQLSecQ4j8Ebd2MY4sNmWx508jH9klXJQxLKnM_G6bGwkv5bTcXw/viewform" target="_blank">Submit Feedback</a>
+                    <a class="btn text-white btn-discord" role="button" style="border-radius: 999px;margin-bottom: 15px;" href="https://discord.gg/kBMEmDD" target="_blank">Join the Discord</a>
+                    <a class="btn btn-danger" role="button" style="border-radius: 999px;" href="https://vanillatweaks.net/" target="_blank">Check out Vanilla Tweaks</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{ end }}

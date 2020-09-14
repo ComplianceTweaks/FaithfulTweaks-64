@@ -1,0 +1,10 @@
+baseURL = "https://faithfultweaks.com/"
+languageCode = "en-us"
+title = "Faithful Tweaks"
+publishDir = "../public"
+disableKinds = ["taxonomy", "taxonomyTerm"]
+
+[minify]
+  [minify.tdewolff]
+    [minify.tdewolff.html]
+      keepWhitespace = true
