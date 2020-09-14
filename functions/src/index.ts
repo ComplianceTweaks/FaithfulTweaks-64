@@ -18,7 +18,7 @@ import * as functions from 'firebase-functions';
 import { Bucket } from "@google-cloud/storage";
 import * as admin from 'firebase-admin';
 admin.initializeApp({
-    storageBucket: "faithfultweaks-app.appspot.com"
+    storageBucket: "faithfultweaks-64-app.appspot.com"
 });
 
 // Delete all the genrated packs every day (ABOUT MIDNIGHT EST)

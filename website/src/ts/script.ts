@@ -203,7 +203,7 @@ function downloadPack() {
 
     // POST Request
     const request = new XMLHttpRequest(); // Request
-    const url = process.env["NODE_ENV"] !== 'production' ? "http://localhost:5001/faithfultweaks/us-central1/makePack" : "https://us-central1-faithfultweaks-app.cloudfunctions.net/makePack"; // URL (based on node environment status)
+    const url = process.env["NODE_ENV"] !== 'production' ? "http://localhost:5001/faithfultweaks/us-central1/makePack" : "https://us-central1-faithfultweaks-64-app.cloudfunctions.net/makePack"; // URL (based on node environment status)
     const data = {
         "format": version,
         "modules": modules,
