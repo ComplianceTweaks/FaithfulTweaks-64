@@ -4,32 +4,32 @@ display: "Unobtrusive"
 
 # Modules
 modules:
-#  - id: "UnobtrusiveScaffolding"
-#    name: "Unobtrusive Scaffolding"
-#    image: "/images/modules/unobtrusive/UnobtrusiveScaffolding.png"
-#    description: "Creates a hole in the top of scaffolding, allowing you to traverse up and down them more comfortably."
-#    origin: "vanillatweaks"
-#    notcompatible:
-#      - 1-8
-#      - 1-9
-#      - 1-10
-#      - 1-11
-#      - 1-12
-#      - 1-13
+  - id: "UnobtrusiveScaffolding"
+    name: "Unobtrusive Scaffolding"
+    image: "/images/modules/unobtrusive/UnobtrusiveScaffolding.png"
+    description: "Creates a hole in the top of scaffolding, allowing you to traverse up and down them more comfortably."
+    origin: "vanillatweaks"
+    notcompatible:
+      - 1-8
+      - 1-9
+      - 1-10
+      - 1-11
+      - 1-12
+      - 1-13
   
-#  - id: "LowFire"
-#    name: "Low Fire"
-#    image: "/images/modules/unobtrusive/LowFire.png"
-#    description: "Lowers the height of fire."
-#    origin: "vanillatweaks"
+  - id: "LowFire"
+    name: "Low Fire"
+    image: "/images/modules/unobtrusive/LowFire.png"
+    description: "Lowers the height of fire."
+    origin: "vanillatweaks"
 
-#  - id: "LowShield"
-#    name: "Low Shield"
-#    image: "/images/modules/unobtrusive/LowShield.png"
-#    description: "Lowers the sheild when its held"
-#    origin: "vanillatweaks"
-#    notcompatible:
-#      - 1-8
+  - id: "LowShield"
+    name: "Low Shield"
+    image: "/images/modules/unobtrusive/LowShield.png"
+    description: "Lowers the sheild when its held"
+    origin: "vanillatweaks"
+    notcompatible:
+      - 1-8
   
   - id: "NoVignette"
     name: "No Vignette"
