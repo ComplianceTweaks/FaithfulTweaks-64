@@ -22,6 +22,8 @@
   <meta name="description" content="Pick and choose how you would like to experience the Faithful resource pack. Supports all versions of Minecraft since 1.8.">
   <meta property="og:description" content="Pick and choose how you would like to experience the Faithful resource pack.">
   <meta name="twitter:description" content="Pick and choose how you would like to experience the Faithful resource pack.">
+  <meta name="keywords" content="faithful, tweaks, x32, x64, bedrock, vanilla, tweaks">
+  <meta name="robots" content="index, follow">
 
   <!-- Favicon -->
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
@@ -33,6 +35,16 @@
 
   <!-- AdSense -->
   <script data-ad-client="ca-pub-9964600489107533" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-EBB0CC7TSB"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-EBB0CC7TSB');
+  </script>
 
   {{ range .AlternativeOutputFormats -}}
   {{ printf `<link rel="%s" type="%s+%s" href="%s" title="%s" />` .Rel .MediaType.Type .MediaType.Suffix .Permalink $.Site.Title | safeHTML }}

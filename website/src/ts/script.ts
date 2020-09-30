@@ -20,7 +20,7 @@ window.addEventListener('DOMContentLoaded', () => {
         // Description popovers
         $('[data-toggle="popover"]').popover({
             placement : 'top',
-            trigger : 'hover'
+            trigger : 'manual'
         });
     // Boostrap 5
         // document.querySelectorAll('[data-toggle="popover"]').forEach((e) => {
@@ -46,6 +46,13 @@ window.addEventListener('DOMContentLoaded', () => {
     
     document.querySelector('#downloadPack').addEventListener('click', downloadPack); // Download
     document.querySelectorAll('#formatGroup                >*').forEach((e: HTMLElement) => e.addEventListener('click', setFormat));                    // Format buttons
+
+    // Hover
+    document.querySelectorAll('.module-selector').forEach((e: HTMLElement) => e.addEventListener('mouseover', moduleHover));
+    document.querySelectorAll('.module-selector').forEach((e: HTMLElement) => e.addEventListener('focus', moduleHover));
+    // Mouse leave
+    document.querySelectorAll('.module-selector').forEach((e: HTMLElement) => e.addEventListener('mouseleave', moduleMouseLeave));
+    document.querySelectorAll('.module-selector').forEach((e: HTMLElement) => e.addEventListener('blur', moduleMouseLeave));
 
     // Modules
     document.querySelectorAll('#normalModules              >*').forEach((e: HTMLElement) => e.addEventListener('click', setModule));                  // Normal modules
@@ -83,42 +90,111 @@ function setFormat(this: HTMLElement) {
     document.querySelectorAll('.hideFormat'+format).forEach((e: HTMLElement) => e.style.display = 'none');
 }
 
+// On hover
+function moduleHover(this: HTMLElement) {
+    // Show popover
+    let popoverContent: string;
+    if (this.getAttribute('data-content') != null) {
+        popoverContent = this.getAttribute('data-content');
+    }
+    
+    // Set preview
+    if (this.getAttribute('data-preview') != null) {
+        document.getElementById('previewImage').setAttribute('src', this.getAttribute('data-preview'));
+    }
+
+    // Set bg if a conflict is selected
+    if (this.getAttribute('data-conflicting') != null) {
+        // Turn conflicts into array
+        const conflicts: Array<string> = this.getAttribute('data-conflicting').split(' ');
+
+        // If there are conflicts active then do the following
+        if (conflicts.some(r=> modules.includes(r))) {
+            // Make popover text
+            let styledConflicts = "Cannot enable because you have selected the following: ";
+            const conflictList: Array<string> = conflicts.filter(e => modules.indexOf(e) !== -1);
+
+            conflictList.forEach((e, i) => {
+                if (i === 0) {
+                    styledConflicts = styledConflicts + document.getElementById(e).children[1].textContent;
+                } else if (i === (conflictList.length - 1) && conflictList.length === 2) {
+                    styledConflicts = styledConflicts + " and " + document.getElementById(e).children[1].textContent;
+                } else if (i === (conflictList.length - 1)) {
+                    styledConflicts = styledConflicts + ", and " + document.getElementById(e).children[1].textContent;
+                } else {
+                    styledConflicts = styledConflicts + ", " + document.getElementById(e).children[1].textContent;
+                }
+            })
+            styledConflicts = styledConflicts + ".";
+
+            // Change background and text color
+            this.style.backgroundColor = "var(--danger)";
+            this.style.color = "#ffffff";
+            this.setAttribute('data-content', styledConflicts);
+        }
+    }
+
+    $(this).popover("show");
+    if (popoverContent != null || popoverContent != undefined) {
+        this.setAttribute('data-content', popoverContent);
+    } else {
+        this.removeAttribute('data-content');
+    }
+}
+
+// After hover
+function moduleMouseLeave(this: HTMLElement) {
+    // Hide popover
+    $(this).popover("hide");
+
+    // Reset preview
+    document.getElementById('previewImage').setAttribute('src', "/images/previews/default.svg");
+
+    // Reset background
+    this.style.removeProperty('background-color');
+    this.style.removeProperty('color');
+}
+
 // Set module function
 function setModule(this: HTMLElement) {
-    if (this.classList.contains('enabled')) {
-        // If already enabled then disable
-        const i = modules.indexOf(this.id);
-        if (i > -1) {
-            modules.splice(i, 1);
+    if (!(this.getAttribute('data-conflicting') != null && this.getAttribute('data-conflicting').split(' ').some(r=> modules.includes(r)))) {
+        if (this.classList.contains('enabled')) {
+            // If already enabled then disable
+            const i = modules.indexOf(this.id);
+            if (i > -1) {
+                modules.splice(i, 1);
+            }
+            this.classList.remove('enabled'); // Remove class
+        } else {
+            // If disabled then enable
+            modules.push(this.id);
+            this.classList.add('enabled'); // Add class
         }
-        this.classList.remove('enabled'); // Remove class
-    } else {
-        // If disabled then enable
-        modules.push(this.id);
-        this.classList.add('enabled'); // Add class
     }
 }
 
 // Set conflicting module function
 function setModuleConflicting (this: HTMLElement) {
-    // For each sibling
-    Array.prototype.filter.call(this.parentNode.children, (c: HTMLElement) => { return c !== this; }).forEach((e: HTMLElement) => {
-        const i = modules.indexOf(e.id);
-        if (i > -1) {
-            modules.splice(i, 1);
-        }
-        e.classList.remove("enabled"); // Remove class
-    });
+    if (!(this.getAttribute('data-conflicting') != null && this.getAttribute('data-conflicting').split(' ').some(r=> modules.includes(r)))) {
+        // For each sibling
+        Array.prototype.filter.call(this.parentNode.children, (c: HTMLElement) => { return c !== this; }).forEach((e: HTMLElement) => {
+            const i = modules.indexOf(e.id);
+            if (i > -1) {
+                modules.splice(i, 1);
+            }
+            e.classList.remove("enabled"); // Remove class
+        });
 
-    // If not in list enable
-    const i = modules.indexOf(this.id);
-    if (i === -1) {
-        modules.push(this.id);
-        this.classList.add('enabled'); // Add class
-    } else {
-        // Else disable
-        modules.splice(i, 1);
-        this.classList.remove("enabled"); // Remove class
+        // If not in list enable
+        const i = modules.indexOf(this.id);
+        if (i === -1) {
+            modules.push(this.id);
+            this.classList.add('enabled'); // Add class
+        } else {
+            // Else disable
+            modules.splice(i, 1);
+            this.classList.remove("enabled"); // Remove class
+        }
     }
 };
 
@@ -203,7 +279,7 @@ function downloadPack() {
 
     // POST Request
     const request = new XMLHttpRequest(); // Request
-    const url = process.env["NODE_ENV"] !== 'production' ? "http://localhost:5001/faithfultweaks/us-central1/makePack" : "https://us-central1-faithfultweaks-64-app.cloudfunctions.net/makePack"; // URL (based on node environment status)
+    const url = process.env["NODE_ENV"] !== 'production' ? "http://localhost:5001/faithfultweaks-app/us-central1/makePack" : "https://us-central1-faithfultweaks-app.cloudfunctions.net/makePack"; // URL (based on node environment status)
     const data = {
         "format": version,
         "modules": modules,

@@ -8,8 +8,8 @@
             <!-- Normal modules that don't conflict -->
             {{ if isset . "modules" }}
                 <div class="d-inline-flex justify-content-center flex-wrap flex-wrap" id="{{ if isset $categoryScope "customFunctionClass"}}{{ $categoryScope.customFunctionClass }}{{else}}normalModules{{end}}">
-                    {{ range sort .modules "name"}}
-                            <div id="{{ .id }}" class='module-selector
+                    {{ range sort (sort .modules "name") "weight" "desc" }}
+                            <div id="{{ .id }}" tabindex="0" class='module-selector
                                     {{ range .notcompatible }}hideFormat{{ . }} {{ end }}
 
                                     {{ if eq .origin "vanillatweaks" }}
@@ -23,6 +23,14 @@
                                 {{ if isset . "description" }}
                                     data-toggle="popover" title="{{ .name }}" data-content="{{ .description }}"
                                 {{ end }}
+
+                                {{ if isset . "preview" }}
+                                    data-preview="{{ .preview }}"
+                                {{ end }}
+
+                                {{ if isset . "conflicting" }}
+                                    data-conflicting="{{ range $i, $conflicting := .conflicting }}{{ if (eq $i 0) }}{{ $conflicting }}{{ else }} {{ $conflicting }}{{ end }}{{ end }}"
+                                {{ end }}
                             >
                                 <img class='mod-icon' src="{{ .image }}">
                                 <h5 style="margin-top: 10px;">{{ .name }}</h5>
@@ -35,8 +43,8 @@
             {{ if isset . "conflictingModules" }}
                 {{ range sort .conflictingModules "sortingName" }}
                     <div class="d-inline-flex justify-content-center flex-wrap" id="{{ if isset $categoryScope "customFunctionClass"}}{{ $categoryScope.customFunctionClass }}{{else}}normalModules{{end}}Conflicting">
-                        {{ range sort .modules "name"}}
-                                <div id="{{ .id }}" class='module-selector
+                        {{ range sort (sort .modules "name") "weight" "desc" }}
+                                <div id="{{ .id }}" tabindex="0" class='module-selector
                                         {{ range .notcompatible }}hideFormat{{ . }} {{ end }}
 
                                         {{ if eq .origin "vanillatweaks" }}
@@ -49,6 +57,14 @@
 
                                     {{ if isset . "description" }}
                                         data-toggle="popover" title="{{ .name }}" data-content="{{ .description }}"
+                                    {{ end }}
+
+                                    {{ if isset . "preview" }}
+                                        data-preview="{{ .preview }}"
+                                    {{ end }}
+
+                                    {{ if isset . "conflicting" }}
+                                        data-conflicting="{{ range $i, $conflicting := .conflicting }}{{ if (eq $i 0) }}{{ $conflicting }}{{ else }} {{ $conflicting }}{{ end }}{{ end }}"
                                     {{ end }}
                                 >
                                     <img class='mod-icon' src="{{ .image }}">
