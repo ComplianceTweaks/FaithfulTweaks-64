@@ -1,6 +1,6 @@
 baseURL = "https://faithfultweaks.com/"
 languageCode = "en-us"
-title = "Faithful Tweaks"
+title = "Faithful Tweaks 64x"
 publishDir = "../public"
 disableKinds = ["taxonomy", "taxonomyTerm"]
 
