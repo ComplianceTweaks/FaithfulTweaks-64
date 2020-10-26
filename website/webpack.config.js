@@ -10,6 +10,9 @@ module.exports = {
         path.resolve('src', 'scss', 'main.scss')
     ],
     mode: 'production',
+    watchOptions: {
+        ignored: ["node_modules/**"],
+    },
     resolve: {
         extensions: ['.ts', '.scss'],
         modules: [

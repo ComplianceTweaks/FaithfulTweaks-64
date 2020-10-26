@@ -1,8 +1,8 @@
 // Module Data
 import { addModules } from "./modules";
-import { addIconModules } from "./modules/iconModules";
-import { addOptionsBG } from "./modules/optionsBGModules";
-import { addMenuPanorama } from "./modules/panoramaModules";
+import { addIconModules } from "./iconModules";
+import { addOptionsBG } from "./optionsBGModules";
+import { addMenuPanorama } from "./panoramaModules";
 
 // Archiver
 import * as archiver from 'archiver';
@@ -11,14 +11,8 @@ import * as os from 'os';
 import * as path from 'path';
 
 // Usefull tools
-import { v4 as uuidv4 } from 'uuid';
-
-// Express
-// import * as express from "express";
-// const app = express();
-// const port: number = 3000;
-// app.use(express.json()) // for parsing application/json
-// app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+import { customAlphabet } from 'nanoid'
+const nanoid = customAlphabet('1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ', 10)
 
 // Firebase
 import * as functions from 'firebase-functions';
@@ -26,7 +20,7 @@ import { Bucket } from "@google-cloud/storage";
 import * as admin from 'firebase-admin';
 admin.initializeApp({
     credential: admin.credential.applicationDefault(),
-    storageBucket: "faithfultweaks-app.appspot.com"
+    storageBucket: "faithfultweaks-64.appspot.com"
 });
 
 // Delete all the genrated packs every day (ABOUT MIDNIGHT EST)
@@ -46,7 +40,6 @@ exports.deletePacks = functions.pubsub.schedule('0 4 * * *').onRun(async (cxt) =
 
 });
 
-// app.post('/', ----- EXPRESS STUFF
 // Create a zip file from file in storage ----- CLOUD FUNCTION -----
 exports.makePack = functions.https.onRequest(async (req, res) => {
     res.set('Access-Control-Allow-Origin', process.env.NODE_ENV !== 'production' ? '*' : 'https://faithfultweaks.com');
@@ -91,40 +84,37 @@ exports.makePack = functions.https.onRequest(async (req, res) => {
     archive.append(creditsTxt, {name: 'credits.txt'}); // add credits.txt file
     
     // Add pack icon
-    // await bucket.file('packfiles/pack.png').download().then((data) => {
-    //     return archive.append(data[0], {name: 'pack.png'});
-    // });
     archive.file(path.join('images', 'pack.png'), {name: 'pack.png'});
     
     if (modules !== undefined && modules !== null) {
-        await addModules(format, archive, modules, bucket); // Add modules to the pack
+        await addModules(format, archive, modules); // Add modules to the pack
     }
 
     if (iconModules !== undefined && iconModules !== null) {
-        await addIconModules(iconModules, archive, bucket); // Add icon modules to icons.png
+        await addIconModules(iconModules, archive); // Add icon modules to icons.png
     }
 
     if (optionsBackground !== undefined && optionsBackground !== null) {
-        await addOptionsBG(optionsBackground, archive, bucket); // Add options background
+        await addOptionsBG(optionsBackground, archive); // Add options background
     }
     
     if (panoOption !== undefined && panoOption !== null) {
-        await addMenuPanorama(panoOption, archive, bucket); // Add menu panorama
+        await addMenuPanorama(panoOption, archive); // Add menu panorama
     }
 
     await archive.finalize(); // finalize the archive
 
     // ----- UPLOAD THE ARCHIVE -----
-    const fileUUID = uuidv4();
-    const tokenUUID = uuidv4();
+    const fileID = nanoid();
+    const downloadToken = nanoid();
 
-    const newPackPath = path.join('FaithfulTweaks', fileUUID + '.zip'); // New file upload path
+    const newPackPath = path.join('FaithfulTweaks', fileID + '.zip'); // New file upload path
 
     // Metadata
     const metadata = {
         contentType: 'application/zip',
         metadata: {
-            firebaseStorageDownloadTokens: tokenUUID,
+            firebaseStorageDownloadTokens: downloadToken,
         }
     };
     
@@ -139,7 +129,7 @@ exports.makePack = functions.https.onRequest(async (req, res) => {
         }).then((data) => {
             const file = data[0];
             // Respond with URL
-            res.status(200).send({ "url": "https://firebasestorage.googleapis.com/v0/b/" + bucket.name + "/o/" + encodeURIComponent(file.name) + "?alt=media&token=" + tokenUUID });
+            res.status(200).send({ "url": "https://firebasestorage.googleapis.com/v0/b/" + bucket.name + "/o/" + encodeURIComponent(file.name) + "?alt=media&token=" + downloadToken });
             fs.unlinkSync(tempFilePath); // Unlink file
             return;
         });
@@ -168,6 +158,7 @@ function mcMeta(format: string) {
         packFormat = 5;
     } else if (format === "1.16.2") {
         packFormat = 6;
+        formatStr = "1.16.2 - Latest";
     } else {
         packFormat = 1
         formatStr = "Error making pack";
@@ -228,8 +219,3 @@ Faithful Textures by xMrVizzy: https://faithful.team
 
 This pack is a modification of The Faithful 32x pack. 
 Modifications are based off of/inspired by the packs by Vanilla tweaks.`
-
-// Have express app listen on the set port
-// app.listen(port, () => {
-//     console.log(`Example app listening at http://localhost:${port}`);
-// });

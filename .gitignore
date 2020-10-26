@@ -4,7 +4,7 @@ filenames.txt
 # Hugo
 website/static/packaged
 website/resources
-public
+website/public
 
 # Functions
 /functions/lib/

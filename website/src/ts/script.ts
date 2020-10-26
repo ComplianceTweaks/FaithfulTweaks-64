@@ -44,6 +44,12 @@ window.addEventListener('DOMContentLoaded', () => {
             
     });
     
+    // Why ads popover
+    // document.getElementById('whyAds').addEventListener('mouseover',  whyAdsShow);
+    // document.getElementById('whyAds').addEventListener('focus',      whyAdsShow);
+    // document.getElementById('whyAds').addEventListener('mouseleave', whyAdsHide);
+    // document.getElementById('whyAds').addEventListener('blur',       whyAdsHide);
+
     document.querySelector('#downloadPack').addEventListener('click', downloadPack); // Download
     document.querySelectorAll('#formatGroup                >*').forEach((e: HTMLElement) => e.addEventListener('click', setFormat));                    // Format buttons
 
@@ -67,6 +73,12 @@ window.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('#panoramasModules           >*').forEach((e: HTMLElement) => e.addEventListener('click', setPano));                    // Panoramas
 });
 
+function whyAdsShow(this: HTMLElement) {
+    $(this).popover("show");
+}
+function whyAdsHide(this: HTMLElement) {
+    $(this).popover("hide");
+}
 
 // Set format to the last number of ID
 function setFormat(this: HTMLElement) {
@@ -279,7 +291,7 @@ function downloadPack() {
 
     // POST Request
     const request = new XMLHttpRequest(); // Request
-    const url = process.env["NODE_ENV"] !== 'production' ? "http://localhost:5001/faithfultweaks-app/us-central1/makePack" : "https://us-central1-faithfultweaks-app.cloudfunctions.net/makePack"; // URL (based on node environment status)
+    const url = process.env["NODE_ENV"] !== 'production' ? "http://localhost:5001/faithfultweaks-64/us-central1/makePack" : "https://us-central1-faithfultweaks-64.cloudfunctions.net/makePack"; // URL (based on node environment status)
     const data = {
         "format": version,
         "modules": modules,
@@ -288,7 +300,7 @@ function downloadPack() {
         "panoOption": panoOption,
     };
     
-    request.open('POST', url, true);
+    request.open(process.env["NODE_ENV"] !== 'production' ? 'GET' : 'POST', url, true); // GET local and POST in production?!?!?!?!?!?!?!?
     request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     request.onreadystatechange = function() {
         if (this.readyState === 4 && this.status == 200) {

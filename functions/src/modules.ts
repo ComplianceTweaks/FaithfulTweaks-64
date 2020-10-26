@@ -1,115 +1,120 @@
 import { Archiver } from "archiver";
-import {Bucket} from '@google-cloud/storage';
 import * as path from 'path';
+import * as fs from 'fs';
 
 // ----- MODULES -----
 const modulesData: Record<string, any> = {
-//  ModuleID               : require('./path/to/moduleid.js'),
-    TestModule             : require('./modules/testModule.js'),
+//  ModuleID               : './path/to/moduleid.json',
+    TestModule             : 'testModule.json',
 
     // Aesthetic
-    AlternateDestruction   : require('./modules/aesthetic/AlternateDestruction.js'),
-    AlternateEntities      : require('./modules/aesthetic/AlternateEntities.js'),
-    AnimatedCampfire       : require('./modules/aesthetic/AnimatedCampfire.js'),
-    BedIcons               : require('./modules/aesthetic/BedIcons.js'),
-    BlackNetherBricks      : require('./modules/aesthetic/BlackNetherBricks.js'),
-    CherryPicking          : require('./modules/aesthetic/CherryPicking.js'),
-    CodeCraftedWool        : require('./modules/aesthetic/CodeCraftedWool.js'),
-    ColorParticle          : require('./modules/aesthetic/ColorParticle.js'),
-    DesatPurpur            : require('./modules/aesthetic/DesatPurpur.js'),
-    DifferentStems         : require('./modules/aesthetic/DifferentStems.js'),
-    EndlessRod             : require('./modules/aesthetic/EndlessRod.js'),
-    FlintArrow             : require('./modules/aesthetic/FlintArrow.js'),
-    GlassDoors             : require('./modules/aesthetic/GlassDoors.js'),
-    GreenJungle            : require('./modules/aesthetic/GreenJungle.js'),
-    JappaSpectralArrow     : require('./modules/aesthetic/JappaSpectralArrow.js'),
-    OldNetherite           : require('./modules/aesthetic/OldNetherite.js'),
-    PinkRod                : require('./modules/aesthetic/PinkRod.js'),
-    PlainLeather           : require('./modules/aesthetic/PlainLeather.js'),
-    RedCrimson             : require('./modules/aesthetic/RedCrimson.js'),
-    RedGolemFlowers        : require('./modules/aesthetic/RedGolemFlowers.js'),
-    SidewaysNuggets        : require('./modules/aesthetic/SidewaysNuggets.js'),
-    SofterWool             : require('./modules/aesthetic/SofterWool.js'),
-    SmoothWarped           : require('./modules/aesthetic/SmoothWarped.js'),
-    SolidHoney             : require('./modules/aesthetic/SolidHoney.js'),
-    SolidSlime             : require('./modules/aesthetic/SolidSlime.js'),
-    SplashEnchanting       : require('./modules/aesthetic/SplashEnchanting.js'),
-    UnbundledHayBales      : require('./modules/aesthetic/UnbundledHayBales.js'),
-    UniqueDyes             : require('./modules/aesthetic/UniqueDyes.js'),
+    AlternateDestruction   : '/aesthetic/AlternateDestruction.json',
+    AlternateEntities      : '/aesthetic/AlternateEntities.json',
+    AnimatedCampfire       : '/aesthetic/AnimatedCampfire.json',
+    BedIcons               : '/aesthetic/BedIcons.json',
+    BlackNetherBricks      : '/aesthetic/BlackNetherBricks.json',
+    CherryPicking          : '/aesthetic/CherryPicking.json',
+    CodeCraftedWool        : '/aesthetic/CodeCraftedWool.json',
+    ColorParticle          : '/aesthetic/ColorParticle.json',
+    DesatPurpur            : '/aesthetic/DesatPurpur.json',
+    DifferentStems         : '/aesthetic/DifferentStems.json',
+    EndlessRod             : '/aesthetic/EndlessRod.json',
+    FlintArrow             : '/aesthetic/FlintArrow.json',
+    GlassDoors             : '/aesthetic/GlassDoors.json',
+    GreenJungle            : '/aesthetic/GreenJungle.json',
+    JappaSpectralArrow     : '/aesthetic/JappaSpectralArrow.json',
+    OldNetherite           : '/aesthetic/OldNetherite.json',
+    PinkRod                : '/aesthetic/PinkRod.json',
+    PlainLeather           : '/aesthetic/PlainLeather.json',
+    RedCrimson             : '/aesthetic/RedCrimson.json',
+    RedGolemFlowers        : '/aesthetic/RedGolemFlowers.json',
+    SidewaysNuggets        : '/aesthetic/SidewaysNuggets.json',
+    SofterWool             : '/aesthetic/SofterWool.json',
+    SmoothWarped           : '/aesthetic/SmoothWarped.json',
+    SolidHoney             : '/aesthetic/SolidHoney.json',
+    SolidSlime             : '/aesthetic/SolidSlime.json',
+    SplashEnchanting       : '/aesthetic/SplashEnchanting.json',
+    UnbundledHayBales      : '/aesthetic/UnbundledHayBales.json',
+    UniqueDyes             : '/aesthetic/UniqueDyes.json',
 
     // Terrain
-    BetterBedrock          : require('./modules/terrain/BetterBedrock.js'),
-    BrighterNether         : require('./modules/terrain/BrighterNether.js'),
-    CircularSnM            : require('./modules/terrain/CircularSnM.js'),
-    PebblelessCoarseDirt   : require('./modules/terrain/PebblelessCoarseDirt.js'),
-    PebblelessDirt         : require('./modules/terrain/PebblelessDirt.js'),
-    SmoothOak              : require('./modules/terrain/SmoothOak.js'),
-    UniformOres            : require('./modules/terrain/UniformOres.js'),
-    WhiterSnow             : require('./modules/terrain/WhiterSnow.js'),
+    BetterBedrock          : '/terrain/BetterBedrock.json',
+    BrighterNether         : '/terrain/BrighterNether.json',
+    CircularSnM            : '/terrain/CircularSnM.json',
+    PebblelessCoarseDirt   : '/terrain/PebblelessCoarseDirt.json',
+    PebblelessDirt         : '/terrain/PebblelessDirt.json',
+    SmoothOak              : '/terrain/SmoothOak.json',
+    UniformOres            : '/terrain/UniformOres.json',
+    WhiterSnow             : '/terrain/WhiterSnow.json',
     
     // Lower and Sides
-    LowerCrimson           : require('./modules/sides/LowerCrimson.js'),
-    LowerGrass             : require('./modules/sides/LowerGrass.js'),
-    LowerMycelium          : require('./modules/sides/LowerMycelium.js'),
-    LowerPaths             : require('./modules/sides/LowerPaths.js'),
-    LowerPodzol            : require('./modules/sides/LowerPodzol.js'),
-    LowerSnow              : require('./modules/sides/LowerSnow.js'),
-    LowerWarped            : require('./modules/sides/LowerWarped.js'),
-    SidesCrimson           : require('./modules/sides/SidesCrimson.js'),
-    SidesGrass             : require('./modules/sides/SidesGrass.js'),
-    SidesMycelium          : require('./modules/sides/SidesMycelium.js'),
-    SidesSnow              : require('./modules/sides/SidesSnow.js'),
-    SidesPaths             : require('./modules/sides/SidesPaths.js'),
-    SidesPodzol            : require('./modules/sides/SidesPodzol.js'),
-    SidesWarped            : require('./modules/sides/SidesWarped.js'),
-    ShorterGrass           : require('./modules/sides/ShorterGrass.js'),
-    ShorterTallGrass       : require('./modules/sides/ShorterTallGrass.js'),
+    LowerCrimson           : '/sides/LowerCrimson.json',
+    LowerGrass             : '/sides/LowerGrass.json',
+    LowerMycelium          : '/sides/LowerMycelium.json',
+    LowerPaths             : '/sides/LowerPaths.json',
+    LowerPodzol            : '/sides/LowerPodzol.json',
+    LowerSnow              : '/sides/LowerSnow.json',
+    LowerWarped            : '/sides/LowerWarped.json',
+    SidesCrimson           : '/sides/SidesCrimson.json',
+    SidesGrass             : '/sides/SidesGrass.json',
+    SidesMycelium          : '/sides/SidesMycelium.json',
+    SidesSnow              : '/sides/SidesSnow.json',
+    SidesPaths             : '/sides/SidesPaths.json',
+    SidesPodzol            : '/sides/SidesPodzol.json',
+    SidesWarped            : '/sides/SidesWarped.json',
+    ShorterGrass           : '/sides/ShorterGrass.json',
+    ShorterTallGrass       : '/sides/ShorterTallGrass.json',
 
     // Utility
-    AgedKelp               : require('./modules/utility/AgedKelp.js'),
-    BetterObservers        : require('./modules/utility/BetterObservers.js'),
-    BrokenItems            : require('./modules/utility/BrokenItems.js'),
-    CleanRedstone          : require('./modules/utility/CleanRedstone.js'),
-    ClearPatterns          : require('./modules/utility/ClearPatterns.js'),
-    ColoredBows            : require('./modules/utility/ColoredBows.js'),
-    CropMarker             : require('./modules/utility/CropMarker.js'),
-    DirectionalHoppers     : require('./modules/utility/DirectionalHoppers.js'),
-    NetherwartGrowthStage  : require('./modules/utility/NetherwartGrowthStage.js'),
-    OreBorders             : require('./modules/utility/OreBorders.js'),
-    RedstonePower          : require('./modules/utility/RedstonePower.js'),
-    StackedItems           : require('./modules/utility/StackedItems.js'),
-    StickyPistonSides      : require('./modules/utility/StickyPistonSides.js'),
+    AgedKelp               : '/utility/AgedKelp.json',
+    BetterObservers        : '/utility/BetterObservers.json',
+    BrewingGuide           : '/utility/BrewingGuide.json',
+    BrokenItems            : '/utility/BrokenItems.json',
+    CleanRedstone          : '/utility/CleanRedstone.json',
+    ClearPatterns          : '/utility/ClearPatterns.json',
+    ColoredBows            : '/utility/ColoredBows.json',
+    CropMarker             : '/utility/CropMarker.json',
+    DirectionalHoppers     : '/utility/DirectionalHoppers.json',
+    NetherwartGrowthStage  : '/utility/NetherwartGrowthStage.json',
+    OreBorders             : '/utility/OreBorders.json',
+    RedstonePower          : '/utility/RedstonePower.json',
+    StackedItems           : '/utility/StackedItems.json',
+    StickyPistonSides      : '/utility/StickyPistonSides.json',
+    VisibleTripwires       : '/utility/VisibleTripwires.json',
+    VisualHoney            : '/utility/VisualHoney.json',
 
     // Unobtrusive
-    AlternateEnchantGlint  : require('./modules/unobtrusive/AlternateEnchantGlint.js'),
-    BorderlessGlass        : require('./modules/unobtrusive/BorderlessGlass.js'),
-    CleanBorderlessGlass   : require('./modules/unobtrusive/CleanBorderlessGlass.js'),
-    CleanGlass             : require('./modules/unobtrusive/CleanGlass.js'),
-    ClearPumpkinBlur       : require('./modules/unobtrusive/ClearPumpkinBlur.js'),
-    InvisibleTotem         : require('./modules/unobtrusive/InvisibleTotem.js'),
-    LowFire                : require('./modules/unobtrusive/LowFire.js'),
-    LowShield              : require('./modules/unobtrusive/LowShield.js'),
-    NoVignette             : require('./modules/unobtrusive/NoVignette.js'),
-    ReducedPumpkinBlur     : require('./modules/unobtrusive/ReducedPumpkinBlur.js'),
-    SlicedSwords           : require('./modules/unobtrusive/SlicedSwords.js'),
-    UnobtrusiveRain        : require('./modules/unobtrusive/UnobtrusiveRain.js'),
-    UnobtrusiveScaffolding : require('./modules/unobtrusive/UnobtrusiveScaffolding.js'),
-    UnobtrusiveWater       : require('./modules/unobtrusive/UnobtrusiveWater.js'),
+    AlternateEnchantGlint  : '/unobtrusive/AlternateEnchantGlint.json',
+    BorderlessGlass        : '/unobtrusive/BorderlessGlass.json',
+    CleanBorderlessGlass   : '/unobtrusive/CleanBorderlessGlass.json',
+    CleanGlass             : '/unobtrusive/CleanGlass.json',
+    ClearPumpkinBlur       : '/unobtrusive/ClearPumpkinBlur.json',
+    InvisibleTotem         : '/unobtrusive/InvisibleTotem.json',
+    LowFire                : '/unobtrusive/LowFire.json',
+    LowShield              : '/unobtrusive/LowShield.json',
+    NoVignette             : '/unobtrusive/NoVignette.json',
+    ReducedPumpkinBlur     : '/unobtrusive/ReducedPumpkinBlur.json',
+    SlicedSwords           : '/unobtrusive/SlicedSwords.json',
+    UnobtrusiveRain        : '/unobtrusive/UnobtrusiveRain.json',
+    UnobtrusiveScaffolding : '/unobtrusive/UnobtrusiveScaffolding.json',
+    UnobtrusiveWater       : '/unobtrusive/UnobtrusiveWater.json',
 
     // UI
-    DarkUI                 : require('./modules/ui/DarkUI.js'),
+    DarkUI                 : '/ui/DarkUI.json',
 }
 
 // Figure out which modules to add
-export async function addModules(format: string, archive: Archiver, modules: string[], bucket: Bucket) {
+export async function addModules(format: string, archive: Archiver, modules: string[]) {
     // For each module
     const promises = modules.map(async (modName) => {
         // If the module exists
         if (modulesData[modName] !== undefined && modulesData[modName] !== null) {
+            const obj = JSON.parse(fs.readFileSync(path.join('./src/modules/', modulesData[modName]), 'utf8'));
+
             // Try to get module path
             let directory;
             try {
-                directory = modulesData[modName][format];
+                directory = obj[format];
             } catch (e) {
                 // If version has no path return
                 console.log('Invalid Version: '+e);
@@ -121,24 +126,6 @@ export async function addModules(format: string, archive: Archiver, modules: str
 
             // List files
             archive.directory(DLPath, false);
-            // await bucket.getFiles({
-            //     autoPaginate: false,
-            //     directory: DLPath,
-            // }).then(async (data) => {
-            //     // For each file
-            //     // tslint:disable-next-line: no-shadowed-variable
-            //     const promises = data[0].map(async (file) => {
-            //         // Download
-            //         await file.download().then((fileData) => {
-            //             // Remove beginning of path from file name
-            //             const fileName = file.name.replace(DLPath, '');
-            //             // Add file to zip
-            //             return archive.append(fileData[0], {name: fileName});
-            //         });
-            //     });
-            //     await Promise.all(promises);
-            //     return;
-            // });
         }
     });
     return Promise.all(promises);
